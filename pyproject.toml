@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "customer-support-env"
+version = "0.1.0"
+description = "Customer Support Environment for OpenEnv — real-world ticket triage simulation"
+dependencies = [
+    "openenv-core>=0.2.3",
+    "pydantic>=2.0",
+    "fastapi>=0.100",
+    "uvicorn>=0.20",
+    "httpx>=0.25",
+    "openai>=1.0",
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["server*"]
