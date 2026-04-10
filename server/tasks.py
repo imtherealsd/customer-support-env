@@ -19,22 +19,30 @@ class SupportTask:
         self.expected_statuses = expected_statuses 
         self.max_steps = max_steps
 
-    def grade(self, current_tickets: List[Dict[str, Any]]) -> float:
+    def grade(self, current_tickets):
         """
-        Returns a score between 0.0 and 1.0 based on how many tickets match their expected status.
+        Returns a score strictly between (0,1)
         """
         if not self.expected_statuses:
-            score = 1.0
+            return 0.9  # instead of 1.0
+
+        correct = 0
+        total = len(self.expected_statuses)
+
+        for ticket in current_tickets:
+            tid = ticket["ticket_id"]
+            if tid in self.expected_statuses and ticket["status"] == self.expected_statuses[tid]:
+                correct += 1
+
+        raw_score = correct / total if total > 0 else 0.0
+
+        # 🔥 Clamp score strictly between (0,1)
+        if raw_score <= 0:
+            return 0.01
+        elif raw_score >= 1:
+            return 0.99
         else:
-            correct = 0
-            total = len(self.expected_statuses)
-            for ticket in current_tickets:
-                tid = ticket["ticket_id"]
-                if tid in self.expected_statuses and ticket["status"] == self.expected_statuses[tid]:
-                    correct += 1
-            score = correct / total
-            
-        return float(score)
+            return raw_score
 
 easy_task = SupportTask(
     task_id="easy_refund",
